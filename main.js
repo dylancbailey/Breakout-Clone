@@ -26,6 +26,10 @@ function create() {
   ball = game.add.sprite(50, 50, 'ball');
   // Add physics to the ball
   game.physics.enable(ball, Phaser.Physics.ARCADE);
+  // Allow the ball to collide with the edges of the screen
+  ball.body.collideWorldBounds = true;
+  // Enable bounce
+  ball.body.bounce.set(1);
   // Move the ball via velocity
   ball.body.velocity.set(150, 150);
 
