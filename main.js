@@ -11,6 +11,8 @@ var score = 0;
 var lives = 3;
 var livesText;
 var lifeLostText;
+var playing = false;
+var startButton;
 
 function preload() {
 
@@ -29,6 +31,7 @@ function preload() {
 
   // Load spritesheet
   game.load.spritesheet('ball', 'assets/wobble.png', 20, 20);
+  game.load.spritesheet('button', 'assets/button.png', 120, 40);
 }
 
 function create() {
@@ -52,8 +55,6 @@ function create() {
   ball.events.onOutOfBounds.add(ballLeaveScreen, this);
   // Enable bounce
   ball.body.bounce.set(1);
-  // Move the ball up via velocity
-  ball.body.velocity.set(150, -150);
 
   // Create the paddle
   paddle = game.add.sprite(game.world.width*0.5, game.world.height-5, 'paddle');
@@ -78,6 +79,10 @@ function create() {
   lifeLostText.anchor.set(0.5);
   lifeLostText.visible = false;
 
+  // Create the start button
+  startButton = game.add.button(game.world.width*0.5, game.world.height*0.5, 'button', startGame, this, 1, 0, 2);
+  startButton.anchor.set(0.5);
+
 }
 
 function update() {
@@ -86,8 +91,10 @@ function update() {
   game.physics.arcade.collide(ball, paddle, ballHitPaddle);
   game.physics.arcade.collide(ball, bricks, ballHitBrick);
 
-  // User input for paddle and sets it to the middle on start
-  paddle.x = game.input.x || game.world.width*0.5;
+  if (playing) {
+    // User input for paddle and sets it to the middle on start
+    paddle.x = game.input.x || game.world.width*0.5;
+  }
 
 }
 
@@ -176,4 +183,10 @@ function ballLeaveScreen() {
 
 function ballHitPaddle(ball, paddle) {
   ball.animations.play('wobble');
+}
+
+function startGame() {
+  startButton.destroy();
+  ball.body.velocity.set(150, -150);
+  playing = true;
 }
