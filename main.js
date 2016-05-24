@@ -151,16 +151,9 @@ function ballHitBrick(ball, brick) {
   scoreText.setText('Points: ' + score);
 
   // Check if no bricks are left and display win text
-  var count_alive = 0;
-  for (i = 0; i < bricks.children.length; i++) {
-    if (bricks.children[i].alive == true) {
-      count_alive++;
-    }
-  }
-
-  if (count_alive == 0) {
-    alert('You won the game!');
-    location.reload();
+  if(score === brickInfo.count.row*brickInfo.count.col*10) {
+      alert('You won the game, congratulations!');
+      location.reload();
   }
 }
 
@@ -183,6 +176,8 @@ function ballLeaveScreen() {
 
 function ballHitPaddle(ball, paddle) {
   ball.animations.play('wobble');
+  // Makes the ball rebounds a little more random
+  ball.body.velocity.x = -1*5*(paddle.x-ball.x);
 }
 
 function startGame() {
