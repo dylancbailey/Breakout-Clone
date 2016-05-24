@@ -65,8 +65,9 @@ function create() {
 
 function update() {
 
-  // Check for a collision between the ball and paddle
+  // Check for a collision between the ball/paddle and brick/ball
   game.physics.arcade.collide(ball, paddle);
+  game.physics.arcade.collide(ball, bricks, ballHitBrick);
 
   // User input for paddle and sets it to the middle on start
   paddle.x = game.input.x || game.world.width*0.5;
@@ -104,4 +105,8 @@ function initBricks() {
       bricks.add(newBrick);
     }
   }
+}
+
+function ballHitBrick(ball, brick) {
+  brick.kill();
 }
