@@ -3,6 +3,9 @@ var game = new Phaser.Game(480, 320, Phaser.AUTO, null,
     {preload: preload, create: create, update: update});
 var ball;
 var paddle;
+var bricks;
+var newBrick;
+var brickInfo;
 
 function preload() {
 
@@ -17,6 +20,7 @@ function preload() {
   // Load the images
   game.load.image('ball', 'assets/ball.png');
   game.load.image('paddle', 'assets/paddle.png');
+  game.load.image('brick', 'assets/brick.png');
 }
 
 function create() {
@@ -54,6 +58,9 @@ function create() {
   // Make paddle immovable
   paddle.body.immovable = true;
 
+  // Create the bricks
+  initBricks();
+
 }
 
 function update() {
@@ -64,4 +71,37 @@ function update() {
   // User input for paddle and sets it to the middle on start
   paddle.x = game.input.x || game.world.width*0.5;
 
+}
+
+// Holds all the information we need to create the bricks
+function initBricks() {
+  brickInfo = {
+      width: 50,
+      height: 20,
+      count: {
+          row: 7,
+          col: 3
+      },
+      offset: {
+          top: 50,
+          left: 60
+      },
+      padding: 10
+  }
+
+  // Create an empty group
+  bricks = game.add.group();
+
+  for (c = 0; c < brickInfo.count.col; c++) {
+    for (r = 0; r < brickInfo.count.row; r++) {
+      // Create a new brick and add it to the group
+      var brickX = (r*(brickInfo.width+brickInfo.padding))+brickInfo.offset.left;
+      var brickY = (c*(brickInfo.height+brickInfo.padding))+brickInfo.offset.top;
+      newBrick = game.add.sprite(brickX, brickY, 'brick');
+      game.physics.enable(newBrick, Phaser.Physics.ARCADE);
+      newBrick.body.immovable = true;
+      newBrick.anchor.set(0.5);
+      bricks.add(newBrick);
+    }
+  }
 }
