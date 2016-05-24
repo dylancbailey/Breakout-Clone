@@ -32,6 +32,14 @@ function create() {
   game.physics.enable(ball, Phaser.Physics.ARCADE);
   // Allow the ball to collide with the edges of the screen
   ball.body.collideWorldBounds = true;
+  // Disable collision with the bottom edge
+  game.physics.arcade.checkCollision.down = false;
+  // Check bounds and alert game over
+  ball.checkWorldBounds = true;
+  ball.events.onOutOfBounds.add(function() {
+    alert('Game Over!');
+    location.reload();
+  }, this);
   // Enable bounce
   ball.body.bounce.set(1);
   // Move the ball up via velocity
