@@ -26,6 +26,9 @@ function preload() {
   game.load.image('ball', 'assets/ball.png');
   game.load.image('paddle', 'assets/paddle.png');
   game.load.image('brick', 'assets/brick.png');
+
+  // Load spritesheet
+  game.load.spritesheet('ball', 'assets/wobble.png', 20, 20);
 }
 
 function create() {
@@ -35,6 +38,7 @@ function create() {
 
   // Create the ball
   ball = game.add.sprite(game.world.width*0.5, game.world.height-25, 'ball');
+  ball.animations.add('wobble', [0,1,0,2,0,1,0,2,0], 24);
   // Set its anchor
   ball.anchor.setTo(0.5);
   // Add physics to the ball
@@ -79,7 +83,7 @@ function create() {
 function update() {
 
   // Check for a collision between the ball/paddle and brick/ball
-  game.physics.arcade.collide(ball, paddle);
+  game.physics.arcade.collide(ball, paddle, ballHitPaddle);
   game.physics.arcade.collide(ball, bricks, ballHitBrick);
 
   // User input for paddle and sets it to the middle on start
@@ -121,7 +125,21 @@ function initBricks() {
 }
 
 function ballHitBrick(ball, brick) {
-  brick.kill();
+  // Play animations when the ball collides with brick
+  ball.animations.play('wobble');
+
+  // Add a tween to smoothly fade out brick
+  var killTween = game.add.tween(brick.scale);
+
+  // to() dfines the states of the object at the end of the tween
+  // to(scale value, time, easing);
+  killTween.to({ x:0, y:0 }, 150, Phaser.Easing.Linear.None);
+  killTween.onComplete.addOnce(function() {
+    brick.kill();
+  }, this);
+  killTween.start();
+
+  // Incrument score by 10 per brick
   score += 10;
   scoreText.setText('Points: ' + score);
 
@@ -154,4 +172,8 @@ function ballLeaveScreen() {
     alert('You lost! :(');
     location.reload();
   }
+}
+
+function ballHitPaddle(ball, paddle) {
+  ball.animations.play('wobble');
 }
